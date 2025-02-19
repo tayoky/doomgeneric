@@ -47,7 +47,7 @@ void DG_Init(){
 	start_ms = timeval2ms(&current_time);
 }
 
-DG_SleepMs(uint32_t ms){
+void DG_SleepMs(uint32_t ms){
 	usleep(ms * 1000);
 }
 
