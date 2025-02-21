@@ -1,16 +1,18 @@
-#include <stdio.>
-#include <unistd.>
+#include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <sys/time.h>
 #include <stdint.h>
+#include <fcntl.h>
 #include <string.h>
+#include "doomgeneric.h"
 
 int framebuffer_fd = -1 ;
 int keyboard_fd = -1;
 
 //todo get this with ioctl
 size_t framebuffer_width  = 640;
-size_t framebuffer_height = 480:
+size_t framebuffer_height = 480;
 
 //keep track of when the game started
 uint64_t start_ms;
@@ -43,7 +45,7 @@ void DG_Init(){
 
 	//get the time
 	struct timeval current_time;
-	gettimeoftheday(&current_time,NULL):
+	gettimeoftheday(&current_time,NULL);
 	start_ms = timeval2ms(&current_time);
 }
 
@@ -56,7 +58,7 @@ void DG_SleepMs(uint32_t ms){
 uint32_t DG_GetTicksMs(){
 	//get the time
 	struct timeval current_time;
-	gettimeoftheday(&current_time,NULL):
+	gettimeoftheday(&current_time,NULL);
 	uint64_t ms = timeval2ms(&current_time) - start_ms;
 	return (uint32_t)ms;
 }
