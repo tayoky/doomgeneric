@@ -30,10 +30,10 @@ void DG_Init(){
 
 	//first open the framebuffer
 	printf("open framebuffer\n");
-	framebuffer_fd = open("dev:/fb0",O_WRONLY);
+	framebuffer_fd = open("dev:/fb/00",O_WRONLY);
 	if(framebuffer_fd < 0){
 		//fail to open
-		perror("open dev:/fb0");
+		perror("open dev:/fb/00");
 		abort();
 	}
 	
@@ -124,8 +124,13 @@ void DG_SetWindowTitle(const char *title){
 void __tlibc_init(void);
 
 int main(int argc,char **argv){
+	printf("launching doom...\n");
 	__tlibc_init();
-	doomgeneric_Create(argc,argv);
+	char *arg[] = {
+		"initrd:/bin/doom",
+		NULL
+	};
+	doomgeneric_Create(1,arg);
 
 	for(;;){
 		doomgeneric_Tick();
