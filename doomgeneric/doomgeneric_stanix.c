@@ -5,7 +5,10 @@
 #include <stdint.h>
 #include <fcntl.h>
 #include <string.h>
+#include <errno.h>
 #include "doomgeneric.h"
+#include "doomkeys.h"
+#include "input.h"
 
 int framebuffer_fd = -1 ;
 int keyboard_fd = -1;
@@ -45,7 +48,7 @@ void DG_Init(){
 
 	//get the time
 	struct timeval current_time;
-	gettimeoftheday(&current_time,NULL);
+	gettimeofday(&current_time,NULL);
 	start_ms = timeval2ms(&current_time);
 }
 
@@ -58,9 +61,51 @@ void DG_SleepMs(uint32_t ms){
 uint32_t DG_GetTicksMs(){
 	//get the time
 	struct timeval current_time;
-	gettimeoftheday(&current_time,NULL);
+	gettimeofday(&current_time,NULL);
 	uint64_t ms = timeval2ms(&current_time) - start_ms;
 	return (uint32_t)ms;
+}
+
+int DG_GetKey(int *pressed, unsigned char *key){
+	char c = 0;
+	ssize_t rsize = read(keyboard_fd,&c,1);
+
+	//nothing to read = no key
+	if(rsize < 1){
+		return 0;
+	}
+
+	*pressed = c >> 8;
+	switch (c & 0b01111111){
+	case 'w':
+		*key = KEY_UPARROW;
+		break;
+	case 'a':
+		*key = KEY_LEFTARROW;
+		break;
+	case 's':
+		*key = KEY_DOWNARROW;
+		break;
+	case 'd':
+		*key = KEY_RIGHTARROW;
+		break;
+	case ' ':
+		*key = KEY_USE;
+		break;
+	case 0x11:
+		*key = KEY_FIRE;
+		break;
+	case 0x0F:
+		*key = KEY_RSHIFT;
+		break;
+	case '\n':
+		*key = KEY_ENTER;
+		break;
+	default:
+		break;
+	}
+
+	return 1;
 }
 
 void DG_DrawFrame(){
@@ -71,7 +116,15 @@ void DG_DrawFrame(){
 	}
 }
 
+void DG_SetWindowTitle(const char *title){
+	//now window no problem
+	(void)title;
+}
+
+void __tlibc_init(void);
+
 int main(int argc,char **argv){
+	__tlibc_init();
 	doomgeneric_Create(argc,argv);
 
 	for(;;){
@@ -80,5 +133,20 @@ int main(int argc,char **argv){
 	return 0;
 }
 	
+//this functions don't exist on stanix so stub here
 
-	
+int system(const char *cmd){
+    return 0;
+}
+
+int remove(const char *path){
+    return -ENOENT;
+}
+
+int rename(const char *src,const char *dest){
+	return -ENOSYS;
+}
+
+int sscanf(const char *buf,const char *fmt,...){
+	return -1;
+}
