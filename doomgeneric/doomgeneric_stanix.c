@@ -10,6 +10,8 @@
 #include "doomkeys.h"
 #include "input.h"
 
+#define ESC '\033'
+
 int framebuffer_fd = -1 ;
 int keyboard_fd = -1;
 
@@ -66,17 +68,19 @@ uint32_t DG_GetTicksMs(){
 	return (uint32_t)ms;
 }
 
+#define CHECK(str) !memcmp(str,&c[2],4)
+
 int DG_GetKey(int *pressed, unsigned char *key){
-	char c = 0;
-	ssize_t rsize = read(keyboard_fd,&c,1);
+	char c[6];
+	ssize_t rsize = read(keyboard_fd,&c,2);
 
 	//nothing to read = no key
-	if(rsize < 1){
+	if(rsize < 2){
 		return 0;
 	}
 
-	*pressed = c >> 8;
-	switch (c & 0b01111111){
+	*pressed = c[0];
+	switch (c[1]){
 	case 'w':
 		*key = KEY_UPARROW;
 		break;
@@ -92,16 +96,31 @@ int DG_GetKey(int *pressed, unsigned char *key){
 	case ' ':
 		*key = KEY_USE;
 		break;
-	case 0x11:
-		*key = KEY_FIRE;
-		break;
-	case 0x0F:
-		*key = KEY_RSHIFT;
+	case ESC:
+		read(keyboard_fd,&c[2],4);
+		if(CHECK("^sco")){
+			*key = KEY_FIRE;
+			break;
+		}
+		if(CHECK("^sls")){
+			*key = KEY_RSHIFT;
+			break;
+		}
+		if(CHECK("^srs")){
+			*key = KEY_RSHIFT;
+			break;
+		}
+		if(CHECK("^[  ")){
+			*key = KEY_ESCAPE;
+			break;
+		}
+		return 0;
 		break;
 	case '\n':
 		*key = KEY_ENTER;
 		break;
 	default:
+		return 0;
 		break;
 	}
 
