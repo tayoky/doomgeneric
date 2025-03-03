@@ -40,7 +40,7 @@ void DG_Init(){
 	}
 	
 	//now open keyboard device
-	printf("open keayboard\n");
+	printf("open keyboard\n");
 	keyboard_fd = open("dev:/kb0",O_RDONLY);
 	if(keyboard_fd < 0){
 		//fail to open
@@ -136,7 +136,7 @@ void DG_DrawFrame(){
 }
 
 void DG_SetWindowTitle(const char *title){
-	//now window no problem
+	//no window no problem
 	(void)title;
 }
 
@@ -147,9 +147,11 @@ int main(int argc,char **argv){
 	__tlibc_init();
 	char *arg[] = {
 		"initrd:/bin/doom",
+		"-iwad",
+		"doom1.wad",
 		NULL
 	};
-	doomgeneric_Create(1,arg);
+	doomgeneric_Create(3,arg);
 
 	for(;;){
 		doomgeneric_Tick();
