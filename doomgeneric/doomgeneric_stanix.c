@@ -145,13 +145,8 @@ void __tlibc_init(void);
 int main(int argc,char **argv){
 	printf("launching doom...\n");
 	__tlibc_init();
-	char *arg[] = {
-		"initrd:/bin/doom",
-		"-iwad",
-		"doom1.wad",
-		NULL
-	};
-	doomgeneric_Create(3,arg);
+
+	doomgeneric_Create(argc,argv);
 
 	for(;;){
 		doomgeneric_Tick();
