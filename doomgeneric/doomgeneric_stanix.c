@@ -81,9 +81,9 @@ int DG_GetKey(int *pressed, unsigned char *key) {
         return 0;
     }
 
-    *pressed = event.ie_key.flags & KEY_PRESS;
-    if (event.ie_key.flags & KEY_GRAPH) {
-        switch () {
+    *pressed = event.ie_key.flags & IE_KEY_PRESS;
+    if (event.ie_key.flags & IE_KEY_GRAPH) {
+        switch (event.ie_key.c) {
             case 'w':
                 *key = KEY_UPARROW;
                 return 1;
@@ -139,8 +139,6 @@ void __tlibc_init(void);
 
 int main(int argc, char **argv) {
     printf("launching doom...\n");
-    printf("argc : %d\n", argc);
-    __tlibc_init();
 
     doomgeneric_Create(argc, argv);
 
