@@ -11,8 +11,6 @@
 #include "doomgeneric.h"
 #include "doomkeys.h"
 
-#define ESC '\033'
-
 int framebuffer_fd = -1;
 int keyboard_fd = -1;
 
@@ -66,8 +64,6 @@ uint32_t DG_GetTicksMs() {
     uint64_t ms = timeval2ms(&current_time) - start_ms;
     return (uint32_t)ms;
 }
-
-#define CHECK(str) !memcmp(str, &c[2], 4)
 
 int DG_GetKey(int *pressed, unsigned char *key) {
     struct input_event event;
@@ -134,8 +130,6 @@ void DG_SetWindowTitle(const char *title) {
     // no window no problem
     (void)title;
 }
-
-void __tlibc_init(void);
 
 int main(int argc, char **argv) {
     printf("launching doom...\n");

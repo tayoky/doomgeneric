@@ -1320,10 +1320,6 @@ void D_DoomMain (void)
         // Auto-detect the configuration dir.
 
         M_SetConfigDir(NULL);
-
-	//for stanix we need to set that to initrd:/
-	//we can remove that when it will get cwd suport
-	M_SetConfigDir("initrd:/");
     }
 
     //!
